@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://bp7805x0drdmw"]
+[gd_scene load_steps=12 format=3 uid="uid://bp7805x0drdmw"]
 
 [ext_resource type="PackedScene" uid="uid://cyo0f5ehkhmfi" path="res://Player/player.tscn" id="1_maeg3"]
 [ext_resource type="Texture2D" uid="uid://b0iabqmomimtg" path="res://oak_woods_v1.0/background/background_layer_1.png" id="2_q1vc2"]
@@ -1256,6 +1256,33 @@ func _process(delta):
 	text = \"HP: \"+str($\"../../Player/Player\".health)
 "
 
+[sub_resource type="GDScript" id="GDScript_368nk"]
+script/source = "extends Label
+
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	pass # Replace with function body.
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta):
+	text = \"Gold: \"+str($\"../../Player/Player\".gold)
+"
+
+[sub_resource type="GDScript" id="GDScript_niov3"]
+script/source = "extends Node2D
+
+var gold = preload(\"res://Collectibles/gold.tscn\")
+
+func _on_timer_timeout():
+	var goldTemp = gold.instantiate()
+	var rng = RandomNumberGenerator.new()
+	var randint = randi_range(50, 500)
+	goldTemp.position = Vector2(randint , 560)
+	add_child(goldTemp)
+"
+
 [node name="level" type="Node2D"]
 
 [node name="BG" type="ParallaxBackground" parent="."]
@@ -1320,3 +1347,21 @@ offset_bottom = 83.0
 theme_override_font_sizes/font_size = 41
 text = "HP:"
 script = SubResource("GDScript_i2au3")
+
+[node name="Label2" type="Label" parent="CanvasLayer"]
+offset_left = 35.0
+offset_top = 73.0
+offset_right = 138.0
+offset_bottom = 133.0
+theme_override_font_sizes/font_size = 41
+text = "Gold:"
+script = SubResource("GDScript_368nk")
+
+[node name="Collectebles" type="Node2D" parent="."]
+script = SubResource("GDScript_niov3")
+
+[node name="Timer" type="Timer" parent="Collectebles"]
+wait_time = 3.0
+autostart = true
+
+[connection signal="timeout" from="Collectebles/Timer" to="Collectebles" method="_on_timer_timeout"]
